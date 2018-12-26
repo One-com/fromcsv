@@ -257,7 +257,7 @@ describe("fromStream", () => {
       });
     });
 
-    it("should call row coalesce with unknows object containg the original columns", () => {
+    it("should call row coalesce with aliases object containg the original columns", () => {
       const processRowCoalesce = sinon
         .stub()
         .named("processRowCoalese")
@@ -285,9 +285,9 @@ describe("fromStream", () => {
         isComplete: true
       }).then(() => {
         expect(processRowCoalesce, "to have calls satisfying", [
-          [{}, { "First Name": "First-o Name-o" }],
-          [{}, { "Last Name": "Family Name" }],
-          [{}, { "Last Name": "Family Name" }]
+          [{}, { "First Name": "First-o Name-o" }, {}],
+          [{}, { "Last Name": "Family Name" }, {}],
+          [{}, { "Last Name": "Family Name" }, {}]
         ]);
       });
     });
@@ -448,7 +448,9 @@ describe("fromData", function() {
         isComplete: true,
         rowObjects: [
           {
-            0: "Smith"
+            unknowns: {
+              "Last Name": "Smith"
+            }
           }
         ]
       });
@@ -464,13 +466,40 @@ describe("fromData", function() {
         isComplete: true,
         rowObjects: [
           {
-            0: "Smith"
+            unknowns: {
+              "Last Name": "Smith"
+            }
           },
           {
-            0: "Doe"
+            unknowns: {
+              "Last Name": "Doe"
+            }
           }
         ]
       });
+    });
+
+    it("should ignore explcitly marked unknown data", function() {
+      const data = {
+        header: ["Foo", null],
+        rows: [["Doe", "something"]]
+      };
+
+      unexpected(
+        fromCsv.fromData(data, forceImport),
+        "to exhaustively satisfy",
+        {
+          isComplete: true,
+          rowObjects: [
+            {
+              Foo: "Doe",
+              unknowns: {
+                1: "something"
+              }
+            }
+          ]
+        }
+      );
     });
   });
 });
