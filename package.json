@@ -4,6 +4,7 @@
   "description": "",
   "main": "lib/FromCsv.js",
   "scripts": {
+    "coverage": "nyc --reporter=lcov --reporter=text npm test",
     "lint": "eslint .",
     "test": "mocha"
   },
@@ -20,6 +21,7 @@
     "eslint-plugin-import": "^2.9.0",
     "eslint-plugin-prettier": "^2.6.0",
     "mocha": "^5.2.0",
+    "nyc": "^13.1.0",
     "prettier": "1.15.3",
     "sinon": "^5.1.1",
     "unexpected": "^10.39.2",
