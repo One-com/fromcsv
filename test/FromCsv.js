@@ -48,6 +48,27 @@ describe("FromCsv", () => {
       "FromCsv: no dialects specified"
     );
   });
+
+  it("should throw if processRowCoalesce was not a function", () => {
+    unexpected(
+      () => {
+        // eslint-disable-next-line no-new
+        new FromCsv({
+          dialects: {
+            test_standard: {
+              columnMap: {
+                Foo: null,
+                Bar: null
+              }
+            }
+          },
+          processRowCoalesce: []
+        });
+      },
+      "to throw",
+      "FromCsv: invalid processRowCoalesce supplied"
+    );
+  });
 });
 
 describe("fromStream", () => {
