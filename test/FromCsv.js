@@ -72,6 +72,21 @@ describe("FromCsv", () => {
 });
 
 describe("fromStream", () => {
+  let fromCsv;
+  const expect = unexpected
+    .clone()
+    .use(require("unexpected-sinon"))
+    .addAssertion(
+      "<array|string> when imported to return output satisfying <object>",
+      (expect, subject, value) => {
+        return expect(importData(fromCsv, subject), "to be fulfilled").then(
+          output => {
+            expect(output, "to satisfy", value);
+          }
+        );
+      }
+    );
+
   it("should handle input stream errors gracefully", function() {
     var erroringStream = stream.Readable();
     erroringStream._read = function() {
@@ -97,29 +112,19 @@ describe("fromStream", () => {
   });
 
   describe("when configured with a columnMap", () => {
-    const fromCsv = new FromCsv({
-      dialects: {
-        test_standard: {
-          columnMap: {
-            "First Name": null,
-            "Other Name": "Middle Name",
-            "Last Name": null
+    beforeEach(() => {
+      fromCsv = new FromCsv({
+        dialects: {
+          test_standard: {
+            columnMap: {
+              "First Name": null,
+              "Other Name": "Middle Name",
+              "Last Name": null
+            }
           }
         }
-      }
+      });
     });
-    const expect = unexpected
-      .clone()
-      .addAssertion(
-        "<array|string> when imported to return output satisfying <object>",
-        (expect, subject, value) => {
-          return expect(importData(fromCsv, subject), "to be fulfilled").then(
-            output => {
-              expect(output, "to satisfy", value);
-            }
-          );
-        }
-      );
 
     it("should ignore empty file", () => {
       const data = ["", "", "", "", ""];
@@ -214,35 +219,24 @@ describe("fromStream", () => {
   });
 
   describe("when configured with a languageMap", () => {
-    let fromCsv = new FromCsv({
-      dialects: {
-        test_languageMap: {
-          columnMap: {
-            "First Name": null,
-            "Other Name": "Middle Name",
-            "Last Name": null
-          },
-          languageMap: {
-            "First Name": ["First-o Name-o"],
-            "Other Name": ["Middle Name"],
-            "Last Name": ["Family Name"]
+    beforeEach(() => {
+      fromCsv = new FromCsv({
+        dialects: {
+          test_languageMap: {
+            columnMap: {
+              "First Name": null,
+              "Other Name": "Middle Name",
+              "Last Name": null
+            },
+            languageMap: {
+              "First Name": ["First-o Name-o"],
+              "Other Name": ["Middle Name"],
+              "Last Name": ["Family Name"]
+            }
           }
         }
-      }
+      });
     });
-    const expect = unexpected
-      .clone()
-      .use(require("unexpected-sinon"))
-      .addAssertion(
-        "<array|string> when imported to return output satisfying <object>",
-        (expect, subject, value) => {
-          return expect(importData(fromCsv, subject), "to be fulfilled").then(
-            output => {
-              expect(output, "to satisfy", value);
-            }
-          );
-        }
-      );
 
     it("should import rows with unequal number of values", () => {
       const data = ["First-o Name-o,Family Name,", "john,", ",doe", ",smith,"];
