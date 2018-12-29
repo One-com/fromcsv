@@ -286,6 +286,47 @@ describe("fromStream", () => {
       });
     });
   });
+
+  describe("when configured with multiple dialects", () => {
+    beforeEach(() => {
+      fromCsv = new FromCsv({
+        dialects: {
+          test_dialect_1: {
+            columnMap: {
+              Name: null,
+              Foo: null,
+              Baz: null
+            }
+          },
+          test_dialect_2: {
+            columnMap: {
+              Name: null,
+              Foo: null,
+              Bar: null
+            }
+          }
+        }
+      });
+    });
+
+    it("should select the second dialect", () => {
+      const data = ["Name,Foo,Bar", "Tester,foo,bar"];
+
+      return expect(data, "when imported to return output satisfying", {
+        isComplete: true,
+        rowObjects: [{ Name: "Tester", Foo: "foo", Bar: "bar" }]
+      });
+    });
+
+    it("should select the first dialect", () => {
+      const data = ["Name,Foo,Baz", "Tester,foo,baz"];
+
+      return expect(data, "when imported to return output satisfying", {
+        isComplete: true,
+        rowObjects: [{ Name: "Tester", Foo: "foo", Baz: "baz" }]
+      });
+    });
+  });
 });
 
 describe("fromData", function() {
