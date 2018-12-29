@@ -144,6 +144,15 @@ describe("fromStream", () => {
       });
     });
 
+    it("should ignore no rows", () => {
+      const data = [",,"];
+
+      return expect(data, "when imported to return output satisfying", {
+        isComplete: true,
+        rowObjects: []
+      });
+    });
+
     it("should pass through empty header row", () => {
       const data = ["", "", "a,a", "b,b"];
 
