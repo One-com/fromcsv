@@ -47,4 +47,37 @@ const importer = new FromCsv({
 });
 ```
 
-This creates an importer for "some_format" of CSV files.
+This creates an instance of the importer that can be used to match
+CSV files of the "some_format" of CSV files. The same instance can
+be reused for each attempt to process files with the same columns.
+
+### fromStream
+
+A text stream containing CSV data can be processed by passing it
+directly to the `fromStream` method:
+
+```js
+const fs = require("fs");
+
+const inputStream = fs.createReadStream("/path/to/file.csv");
+
+importer.fromStream(inputStream, (err, output) => {
+  // ...
+});
+```
+
+### fromData
+
+To submit an unsuccessful payload to the server to be processed
+again, the `fromData` method is used:
+
+```js
+const data = {
+  header: ["Title", "Surname"],
+  rows: [["Mr.", "Smith"], ["Mrs.", "Smith"]]
+};
+
+importer.fromData(data, (err, output) => {
+  // ...
+});
+```
