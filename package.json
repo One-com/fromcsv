@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "description": "",
   "main": "lib/FromCsv.js",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "coverage": "nyc --reporter=lcov --reporter=text npm test",
     "lint": "eslint .",
