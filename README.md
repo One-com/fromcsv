@@ -1,5 +1,8 @@
 # FromCsv
 
+[![NPM version](https://badge.fury.io/js/fromcsv.svg)](http://badge.fury.io/js/fromcsv)
+[![Build Status](https://travis-ci.org/One-com/fromcsv.svg?branch=master)](https://travis-ci.org/One-com/fromcsv)
+
 This module implements an engine for CSV importing.
 
 Compared to other such importers, this lirary is intended to be
