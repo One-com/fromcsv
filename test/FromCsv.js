@@ -310,9 +310,9 @@ describe("fromStream", () => {
         isComplete: true
       }).then(() => {
         expect(processRowCoalesce, "to have calls satisfying", [
-          [{}, { "First Name": "First-o Name-o" }, {}],
-          [{}, { "Last Name": "Family Name" }, {}],
-          [{}, { "Last Name": "Family Name" }, {}]
+          [{}, { "First Name": "First-o Name-o" }, {}, {}],
+          [{}, { "Last Name": "Family Name" }, {}, {}],
+          [{}, { "Last Name": "Family Name" }, {}, {}]
         ]);
       });
     });
