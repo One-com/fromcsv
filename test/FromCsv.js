@@ -260,6 +260,28 @@ describe("fromStream", () => {
       });
     });
 
+    it("should allow ambiguous column definitions", () => {
+      fromCsv = new FromCsv({
+        dialects: {
+          test_standard: {
+            columnMap: {
+              Anything: "anything"
+            },
+            languageMap: {
+              Anything: ["First-o Name-o", "Last-o Name-o"]
+            }
+          }
+        }
+      });
+
+      const data = [["Anything", "Anything"], ["john", "smith"]];
+
+      return expect(data, "when imported to return output satisfying", {
+        isComplete: true,
+        rowObjects: [{ anything: ["john", "smith"] }]
+      });
+    });
+
     it("should call row coalesce with aliases object containg the original columns", () => {
       const processRowCoalesce = sinon
         .stub()
@@ -388,6 +410,18 @@ describe("fromData", function() {
           Bar: "Smith"
         }
       ]
+    });
+  });
+
+  it("returns row objects while handling empty values", function() {
+    const data = {
+      header: ["Foo", null],
+      rows: [["Mr.", "Smith"]]
+    };
+
+    unexpected(fromCsv.fromData(data), "to satisfy", {
+      isComplete: false,
+      rows: [["Mr.", "Smith"]]
     });
   });
 
@@ -544,6 +578,30 @@ describe("fromData", function() {
           ]
         }
       );
+    });
+
+    it("returns row objects while handling unknown header", function() {
+      const data = {
+        header: ["Foo", "xxx"],
+        rows: [["Mr.", "Smith"]]
+      };
+
+      unexpected(fromCsv.fromData(data, true), "to satisfy", {
+        isComplete: true,
+        rowObjects: [{ Foo: "Mr.", unknowns: { xxx: "Smith" } }]
+      });
+    });
+
+    it("returns row objects while handling empty header", function() {
+      const data = {
+        header: ["Foo", null],
+        rows: [["Mr.", "Smith"]]
+      };
+
+      unexpected(fromCsv.fromData(data, true), "to satisfy", {
+        isComplete: true,
+        rowObjects: [{ Foo: "Mr.", unknowns: { 1: "Smith" } }]
+      });
     });
   });
 });
